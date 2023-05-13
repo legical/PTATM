@@ -2,7 +2,7 @@
 
 该项目是一个程序的辅助分析工具，提供了多个命令行工具来分析和处理程序的二进制文件和追踪文件。其中 `analysis.py` 提供了一些生成任务控制器的工具，实现基于追踪数据的划分和分析，并用于生成概率最大的最坏执行时间（p-WCET）分析结果。
 
-## CFG2Segment
+## `CFG2Segment`
 ### CFG2Segment/CFGRefactor.py
 
 这是一个 Python 代码文件，文件名为 CFGRefactor.py。它定义了一个名为 CFGRefactor 的类和其他几个继承自 CFGRefactor 的子类，每个子类都实现了 refactor 方法来重构 CFGBase.Function 对象。其中 FunctionRefactor 根据给定的控制流图节点，尝试使用 angr 库中的节点数据来创建一个新的 CFGBase.Function 对象。如果此重构失败，则该函数会将其添加到 failed 列表中。如果所有重构都成功，则返回 True。
@@ -34,7 +34,7 @@
 
 该程序文件定义了几个类来实现基于代码流图的程序控制流分析。其中，Segment类是基本的代码段类，其中包含段的名称、起始地址、前趋和后继等信息。SegmentFunction类是基于Segment类的代码段的功能类。它包含一个函数的所有段和一些有关函数的信息。SFG类是基于Segment类的代码段的流图类。它包含多个段和一些与段有关的信息。该文件的代码还包含一些与段名称和编号有关的实用函数。该代码文件假设同一个函数的段名称必须不同，因为它们以函数名称和段号作为名称的一部分。
 
-## SegmentInfoCollector
+## `SegmentInfoCollector`
 ### SegmentInfoCollector/Collector.py
 
 该程序文件是一个Python脚本，名字为Collector.py。它依赖于Python的subprocess模块，为某个性能追踪系统收集程序运行时的跟踪信息。它的主要功能包括添加或删除程序运行时的监控探针，使用perf record命令和perf script命令，以及从perf script命令的输出中提取时间戳和代码段信息。具体而言，它提供了静态方法addprobe()和delprobe()用于添加探针和删除探针，collectTrace()方法用于收集程序的性能追踪信息，fetchSegmentAndTime()方法用于从追踪信息中提取需要的信息。
@@ -47,7 +47,7 @@
 
 该程序文件是一个Python脚本，用于定义实现了分段函数类的跟踪类（Trace）和相关的填充类（TraceFiller）、序列化类（TraceSerializer）以及剥离类（TraceStripper）。其中跟踪类定义了一个跟踪对象，包含了一个命令集合、一组字典以及一个时间戳。填充类用于从外部数据源填充Trace对象；序列化类用于将Trace对象序列化为Json格式的字符串；剥离类用于从Trace对象中删除或修改一些字段。
 
-## test
+## `test`
 ### test/SegmentBuildTest.py
 
 该代码文件是一个 Python 脚本，使用了 angr 库，建立了一个程序在执行时的控制流图（CFG）。接着，使用了 CFG2Segment 库将 CFG 转化为基本块列表（Basic Block List）。然后，实例化了 CFG2Segment 库中的 FunctionalSFGBuilder 和 BlockCheckSearcher 类，用于构建和验证子函数的 SFG（Sub Function Graph）和块的合法性。最后，打印出了结果并输出到控制台。
@@ -83,7 +83,7 @@
 
 此程序文件是一个Python脚本，用于生成针对给定命令的探针跟踪。它使用argparse解析命令行参数，并允许用户指定用于插装的探针、跟踪周期和跟踪输出格式。它通过调用perf命令动态地添加和删除探针，重定向标准输出和标准错误以分别捕获跟踪信息和错误信息，并使用正则表达式提取纯粹的时间戳和段名。
 
-## PWCETGenerator
+## `PWCETGenerator`
 ### PWCETGenerator/EVTTool.py
 
 该程序文件主要是一个极值分布工具，其中包括三个类：PWCETInterface, ExtremeDistribution和LinearCombinedExtremeDistribution，以及五个子类：GEV、GPD、PositiveLinearGumbel、PositiveLinearExponentialPareto、EVT。每个子类提供不同的生成和拟合极值分布的方法，适用于不同的情况和数据需求。该程序文件还包括一些工具函数来辅助生成或拟合极值分布。
