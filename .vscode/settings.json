@@ -8,5 +8,9 @@
         "vector": "c",
         "string_view": "c",
         "initializer_list": "c"
-    }
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.formatting.provider": "none"
 }

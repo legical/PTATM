@@ -136,29 +136,42 @@ Provide pwcet analysis service.
             We will save arguments of extreme distribution and expressions into the file provided 
             by positional argument, see PWCETGenerator/PWCETSolver.py for detail.
 """
-
+# root的变量，用来存储环境变量PTATM的值。如果环境变量PTATM不存在，则将root的值设置为字符串'None'
 root = os.getenv('PTATM', 'None')
 
+# 执行给定的shell命令，返回True或False表示状态
 def exec(shellcmd: str) -> bool:
     return 0 == subprocess.run(shellcmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode
 
+# 执行给定的shell命令，并返回它的输出和错误
 def execWithResult(shellcmd: str):
     return subprocess.run(shellcmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+# 判断当前进程是否以 root 权限运行, ID 为 0 的用户是 root 用户
 def issudo() -> bool:
     return os.getuid() == 0
 
+# 打印格式化的日志信息 [2022-01-01 12:00:00] log_content
 def report(s: str):
     sys.stdout.write('[%s] %s\n' % (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), s))
 
+# 给日志加标签 [INFO]
 def info(s: str):
     report('[INFO] %s' % s)
 
+# 给日志加标签 [WARN]
 def warn(s: str):
     report('[WARN] %s' % s)
 
+# 解析二进制文件，将其切成段，并返回该文件的uprobes的列表
 class SegmentModule:
+    # 定义静态方法，意味着可以在不创建类实例的情况下使用该方法
     @staticmethod
+    # binary（二进制文件的路径）    functions（函数名称列表）
+    # max_seg（段的最大数量）       verbose（是否输出详细信息）
+    # 使用angr解析二进制文件，从中提取控制流图（CFG），并重构CFG以去除无效代码。
+    # 然后使用SFGBuilder构建基于CFG的段流图（SFG）。
+    # 最后在函数中为每个段生成uprobes（用户空间探测点），并将所有探测点作为字符串列表返回。
     def genprobes(binary: str, functions: list, max_seg: int, verbose: bool):
         import angr
         from CFG2Segment import CFGBase, CFGRefactor, SFGBase, SFGBuilder
@@ -166,7 +179,9 @@ class SegmentModule:
         # Parse binary with angr.
         if verbose:
             info('Build angr cfg for binary[%s].' % binary)
+        # 创建一个Project对象，其中包含有关给定二进制文件的各种信息。禁止自动加载依赖库
         angr_project = angr.Project(binary, load_options={'auto_load_libs': False})
+        # 快速构建给定程序的控制流图（CFG）
         angr_cfg = angr_project.analyses.CFGFast()
 
         # Refactor CFG.
@@ -199,6 +214,10 @@ class SegmentModule:
             probes.append(segfunc.name + "=" + segfunc.name + r"%return")
         return probes
 
+    # 接受一个参数args，该参数包含用户提供的命令行参数。
+    # 如果没有传递函数名称，则默认为“main”。
+    # 方法调用genprobes方法来获取uprobes列表，并将其写入指定的输出文件中。
+    # 如果verbose参数为True，则在执行过程中输出详细信息。
     @staticmethod
     def service(args):
         if not hasattr(args, 'function'):
