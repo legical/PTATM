@@ -198,7 +198,7 @@ class SegmentModule:
         sfg_builder = SFGBuilder.FunctionalSFGBuilder(max_seg, functions)
         build_result = sfg_builder.build(sfg)
 
-        # Dump uprobes.
+        # Dump uprobes. 为每个 Segment 创建 uprobes
         if verbose:
             info('Dump uprobes.')
         probes = []
@@ -206,6 +206,7 @@ class SegmentModule:
             segfunc = sfg.getSegmentFunc(name)
             if segfunc is None:
                 continue
+            # 对于每个函数的每个 Segment，都会生成一个探测点，其格式为 name=func+offset，其中 name 表示 Segment 的名字，offset 表示该 Segment 在函数中的偏移量，func 表示函数的名字
             for segment in segfunc.segments:
                 offset = hex(segment.startpoint.addr - segfunc.addr)
                 probe_prefix = segment.name + "="

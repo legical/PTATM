@@ -39,13 +39,13 @@ class FunctionRefactor(CFGRefactor):
 
     # This refactor simply considers that indirect call always returns to the next block directly.
     def refactor(self, target: CFGBase.Function):
-        '''
+        """
         对给定函数（即目标）进行CFG重构，使得所有间接调用（indirect call）的返回路径都直接返回到下一个块
         Args：
             target: 要进行重构的目标函数，类型为CFGBase.Function
         Return：
             重构成功返回True，否则返回False
-        '''
+        """
         # Type checking.
         if not isinstance(target, CFGBase.Function):
             return False

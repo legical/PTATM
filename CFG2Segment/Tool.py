@@ -7,7 +7,7 @@ class GraphTool:
     # [in]  start           Start point of the whole traversal.
     # [in]  getNeighbor     A function object provides a node list of current node which will be traveled in next iteration.
     # [in]  ignoreNeighbor  A function object tells us whether travel a node or not.
-    # [out]                 A traveled node list.
+    # [out]                 A traveled node list. 从start节点开始能访问到的所有节点的集合
     @staticmethod
     def traversal(start, getNeighbor, ignoreNeighbor) -> set:
         visit, stack = set([start]), [start]
@@ -110,7 +110,16 @@ class PathCoverSearcher(SegmentSearcher):
 class BlockCheckSearcher(SegmentSearcher):
     def search(self, start, ends: set, getSuccessors) -> set:
         # 1. Find a path start with entry block and end with the node saticfies isEndpoint.
+        # 使用searchValidPathRecursive()方法搜索从start到ends之间的有效路径。
+        # 具体来说，该方法采用递归深度优先搜索（DFS）的方式，依次访问每个节点，并将它们添加到path列表中。
+        # 如果某个节点是终止节点，则返回；否则，继续递归搜索该节点的后继节点。
+        # 最终，如果找到了一条有效路径，就返回该路径。
+
         # 2. Check each path node and collect those satisfy isSeperatorNode.
+        # 调用isSeparateNode()方法检查每个路径节点是否可以作为分隔符。
+        # 该方法首先判断路径节点是否等于起始节点start，如果是，则返回False。
+        # 然后，使用GraphTool.traversal()方法获取当前节点target的遍历子图，以及从start到target的遍历子图。
+        # 如果当前节点target属于终止节点集合ends，并且从start到target的遍历子图与终止节点集合ends没有交集，并且当前节点target的遍历子图与从start到target的遍历子图没有交集，那么就将该节点target作为分隔符。
 
         # Search a valid path, [1:-1] removes startpoint and endpoint.
         path = list()
@@ -176,4 +185,5 @@ class BlockCheckSearcher(SegmentSearcher):
         # return 0 != len(targetSet&endPoints) and 0 == len(startSet&ends)
 
         # Return valid targetNode.
+        # [targetSet 与 ends 交集非空] and [startSet 和 ends交集为空] and [startSet 和 targetSet交集为空]
         return 0 != len(targetSet&ends) and 0 == len(startSet&ends) and 0 == len(targetSet&startSet)

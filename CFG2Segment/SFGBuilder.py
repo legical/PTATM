@@ -2,24 +2,28 @@ from abc import abstractmethod
 from . import CFGBase, SFGBase, Tool
 
 class SFGBuilder:
+    # 构造函数，用于初始化构建器类最大段数
     def __init__(self, max_seg) -> None:
         # Max segment num while building segment list.
         self.max_seg = max_seg
 
     @abstractmethod
+    # 抽象函数，用于根据输入构建 SFG。由子类实现
     def build(self, target) -> bool:
         pass
 
-    # Modifier
+    # Modifier 设置构建器类最大段数
     def setMaxSegment(self, max_seg):
         self.max_seg = max_seg
 
 class SFGReset:
+    # 抽象基类，定义了重置器的接口
     @abstractmethod
     def reset(self, target) -> bool:
         pass
 
 class SegmentFunctionReset(SFGReset):
+    # 用于重置 SFGBase.SegmentFunction
     def reset(self, target: SFGBase.SegmentFunction) -> bool:
         # Reset target members.
         target.segments = list()
@@ -27,7 +31,7 @@ class SegmentFunctionReset(SFGReset):
         target.end_segments.clear()
         return True
 
-# Make segment list for target function(SFGBase.SegmentFunction).
+# Make segment list for target function(SFGBase.SegmentFunction). 用于构建 SFGBase.SegmentFunction
 class FunctionalSegmentListBuilder(SFGBuilder):
     def __init__(self, max_seg) -> None:
         super().__init__(max_seg)
@@ -36,6 +40,7 @@ class FunctionalSegmentListBuilder(SFGBuilder):
         # Save addresses of error separators while make segment.
         self.error_seps = set()
 
+    # 在给定的函数中搜索可能的分隔符，并返回结果
     def searchSeparator(self, function: CFGBase.Function) -> list[int]:
         # Final seps.
         final = list()
@@ -47,7 +52,9 @@ class FunctionalSegmentListBuilder(SFGBuilder):
         seps.sort()
         # Shrink separators if len(sepNodes) > max_sep.
         cur_sep = len(seps)
+        # 如果潜在的分隔符数量超过了最大允许数量
         if cur_sep > max_sep and self.max_seg > 0:
+            # 通过计算步长来选取一些分隔符作为最终结果
             cur, step = 0, cur_sep/self.max_seg
             for _ in range(max_sep):
                 cur += step
