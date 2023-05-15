@@ -124,6 +124,8 @@ class SFG:
             return False
         for segment in func.segments:
             self.removeSegment(segment)
+        # remove function?
+        self.functions.pop(name)
         return True
 
     # Accessor
