@@ -206,6 +206,7 @@ class CFG:
         # 对于函数中的每个基本块地址，通过调用removeCFGNodeByAddr()方法来将其从nodes字典中删除
         for addr in func.nodes.keys():
             self.removeCFGNodeByAddr(addr)
+        self.functions.pop(name)
         return True
 
     # Accessor

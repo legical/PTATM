@@ -7,13 +7,14 @@ class CFGRefactor:
     def refactor(self, target) -> bool:
         pass
 
+# 将给定的Function对象重置为其初始状态，即清空其所有成员变量
 class FunctionReset(CFGRefactor):
     def refactor(self, target: CFGBase.Function) -> bool:
         # Type checking.
         if not isinstance(target, CFGBase.Function):
             return False
 
-        # Reset target members.
+        # Reset target members. 清空 Function 的所有list
         target.callees.clear()
         for node in target.nodes.values():
             node.predecessors.clear()
